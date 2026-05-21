@@ -1,0 +1,23 @@
+{
+  "type": "cloneAndModify",
+  "payload": {
+    "sourceNodeId": "REPLACE_WITH_SOURCE_NODE_ID",
+    "name": "Promo MLBB Variant",
+    "x": 1200,
+    "y": 0,
+    "changes": [
+      {
+        "target": { "byName": "Title" },
+        "patch": { "text": "PROMO FREE FIRE", "fill": "#ffffff" }
+      },
+      {
+        "target": { "byName": "Badge" },
+        "patch": { "text": "WEEKEND BLAST", "fill": "#ff5252" }
+      },
+      {
+        "target": { "byName": "CTA" },
+        "patch": { "text": "ORDER FF SEKARANG" }
+      }
+    ]
+  }
+}

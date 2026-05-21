@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "bridge": "node bridge/server.js",
+    "send": "node bridge/send-command.js",
+    "subscribe": "node bridge/subscribe.js",
+    "build": "node scripts/build-plugin.js",
+    "check": "node --check bridge/server.js && node --check bridge/send-command.js && node --check bridge/subscribe.js && node --check bridge/ws.js && node --check plugin/src/code.js"
+  }
+}

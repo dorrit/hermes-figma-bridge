@@ -1,0 +1,44 @@
+{
+  "type": "createFromSpec",
+  "payload": {
+    "spec": {
+      "type": "FRAME",
+      "name": "Gradient Promo",
+      "width": 1080,
+      "height": 1350,
+      "fills": [
+        {
+          "type": "GRADIENT_LINEAR",
+          "gradientTransform": [[1, 0, 0], [0, 1, 0]],
+          "stops": [
+            { "position": 0, "color": "#1a1a2e" },
+            { "position": 1, "color": "#e94560" }
+          ]
+        }
+      ],
+      "effects": [
+        {
+          "type": "DROP_SHADOW",
+          "color": { "r": 0, "g": 0, "b": 0, "a": 0.4 },
+          "offset": { "x": 0, "y": 16 },
+          "radius": 32,
+          "spread": 0,
+          "visible": true,
+          "blendMode": "NORMAL"
+        }
+      ],
+      "autoLayout": {
+        "layoutMode": "VERTICAL",
+        "paddingTop": 96,
+        "paddingRight": 72,
+        "paddingBottom": 72,
+        "paddingLeft": 72,
+        "itemSpacing": 28
+      },
+      "children": [
+        { "type": "TEXT", "name": "Headline", "text": "AI-Generated Promo", "fontSize": 84, "bold": true, "fill": "#ffffff" },
+        { "type": "ELLIPSE", "name": "Decor", "width": 200, "height": 200, "fill": "#ffd84d" }
+      ]
+    }
+  }
+}

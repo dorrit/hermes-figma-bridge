@@ -1,0 +1,55 @@
+{
+  "type": "createFromSpec",
+  "payload": {
+    "spec": {
+      "type": "FRAME",
+      "name": "Dynamic Topup Promo",
+      "width": 1080,
+      "height": 1350,
+      "fill": "#0b1320",
+      "autoLayout": {
+        "layoutMode": "VERTICAL",
+        "paddingTop": 88,
+        "paddingRight": 72,
+        "paddingBottom": 72,
+        "paddingLeft": 72,
+        "itemSpacing": 30
+      },
+      "children": [
+        {
+          "type": "TEXT",
+          "name": "Eyebrow",
+          "text": "NARA TOPUP WEEKEND",
+          "fontSize": 28,
+          "bold": true,
+          "fill": "#ffd84d"
+        },
+        {
+          "type": "TEXT",
+          "name": "Headline",
+          "text": "Diamond MLBB Instant",
+          "fontSize": 84,
+          "bold": true,
+          "fill": "#ffffff",
+          "width": 936
+        },
+        {
+          "type": "RECTANGLE",
+          "name": "Hero Image Placeholder",
+          "width": 936,
+          "height": 520,
+          "fill": "#1f3558",
+          "cornerRadius": 42
+        },
+        {
+          "type": "TEXT",
+          "name": "Body Copy",
+          "text": "Ambil promo hari ini, cocok buat push rank tanpa nunggu lama.",
+          "fontSize": 36,
+          "fill": "#c9d6e5",
+          "width": 936
+        }
+      ]
+    }
+  }
+}

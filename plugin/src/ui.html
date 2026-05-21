@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+  <body style="font: 12px sans-serif; margin: 16px; color: #1a1a1a">
+    <h3 style="margin: 0 0 8px">Hermes Canvas Bridge</h3>
+    <label>Bridge URL</label>
+    <input id="url" value="http://localhost:3131" style="width: 100%; margin: 4px 0 8px" />
+    <label>Secret optional</label>
+    <input id="secret" type="password" style="width: 100%; margin: 4px 0 8px" />
+    <div style="display: flex; gap: 8px; margin-bottom: 8px">
+      <label style="flex: 1"><input type="checkbox" id="ws" checked /> WebSocket events</label>
+      <label style="flex: 1"><input type="checkbox" id="poll" checked /> HTTP commands</label>
+    </div>
+    <div style="display: flex; gap: 8px; margin-bottom: 8px">
+      <button id="start" style="flex: 1">Start</button>
+      <button id="stop" style="flex: 1">Stop</button>
+    </div>
+    <div id="status" style="padding: 4px 8px; background: #f0f0f0; border-radius: 4px; margin-bottom: 6px">idle</div>
+    <pre id="log" style="white-space: pre-wrap; background: #f4f4f4; padding: 8px; height: 140px; overflow: auto; font-size: 11px; margin: 0"></pre>
+    <script>
+      var ws = null;
+      var cfg = { bridgeUrl: "http://localhost:3131", secret: "" };
+      var logBox = document.getElementById("log");
+      var statusBox = document.getElementById("status");
+
+      function log(message) {
+        logBox.textContent = new Date().toLocaleTimeString() + " " + message + "\n" + logBox.textContent;
+      }
+
+      function setStatus(text) {
+        statusBox.textContent = text;
+      }
+
+      function pluginMessage(message) {
+        parent.postMessage({ pluginMessage: message }, "*");
+      }
+
+      function openWS(bridgeUrl, secret) {
+        try {
+          var wsUrl = bridgeUrl.replace(/^http/, "ws") + "/ws?role=plugin" + (secret ? "&secret=" + encodeURIComponent(secret) : "");
+          ws = new WebSocket(wsUrl);
+          ws.onopen = function () {
+            setStatus("WS connected");
+            log("WS open");
+          };
+          ws.onmessage = function (e) {
+            try {
+              var msg = JSON.parse(e.data);
+              if (msg.kind === "wake") pluginMessage({ type: "pollNow" });
+            } catch (error) {
+              // ignore malformed server messages
+            }
+          };
+          ws.onclose = function () {
+            setStatus("WS closed");
+            log("WS closed");
+            ws = null;
+          };
+          ws.onerror = function () {
+            log("WS error");
+          };
+        } catch (error) {
+          log("WS init error: " + error.message);
+        }
+      }
+
+      function pushEvent(event) {
+        if (!ws || ws.readyState !== WebSocket.OPEN) return;
+        try {
+          ws.send(JSON.stringify({ kind: "event", event: event }));
+        } catch (error) {
+          log("WS send error: " + error.message);
+        }
+      }
+
+      document.getElementById("start").onclick = function () {
+        cfg.bridgeUrl = document.getElementById("url").value;
+        cfg.secret = document.getElementById("secret").value;
+        var useWS = document.getElementById("ws").checked;
+        var usePoll = document.getElementById("poll").checked;
+
+        if (useWS && !ws) openWS(cfg.bridgeUrl, cfg.secret);
+        pluginMessage({ type: "configure", bridgeUrl: cfg.bridgeUrl, secret: cfg.secret });
+        if (usePoll) pluginMessage({ type: "startPolling", bridgeUrl: cfg.bridgeUrl, secret: cfg.secret });
+        else pluginMessage({ type: "stopPolling" });
+
+        setStatus("running");
+        log("started");
+      };
+
+      document.getElementById("stop").onclick = function () {
+        if (ws) {
+          ws.close();
+          ws = null;
+        }
+        pluginMessage({ type: "stopPolling" });
+        pluginMessage({ type: "stop" });
+        setStatus("stopped");
+        log("stopped");
+      };
+
+      window.onmessage = function (event) {
+        var msg = event.data.pluginMessage;
+        if (!msg) return;
+        if (msg.type === "log") log(msg.message);
+        if (msg.type === "event") pushEvent(msg.event);
+      };
+    </script>
+  </body>
+</html>

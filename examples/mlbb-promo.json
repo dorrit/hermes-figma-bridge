@@ -1,0 +1,14 @@
+{
+  "type": "createPromoFrame",
+  "payload": {
+    "name": "MLBB Promo - Agent Generated",
+    "width": 1080,
+    "height": 1350,
+    "background": "#101820",
+    "accent": "#ffcc33",
+    "badge": "FLASH DEAL TOPUP",
+    "title": "PROMO MLBB",
+    "subtitle": "Diamond cepat masuk, harga aman buat push rank malam ini.",
+    "cta": "ORDER VIA NARA"
+  }
+}

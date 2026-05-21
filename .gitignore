@@ -1,0 +1,14 @@
+node_modules/
+.env
+.env.*
+!.env.example
+.DS_Store
+*.log
+/tmp/
+.cache/
+dist/
+coverage/
+
+# Local Hermes / runtime artifacts
+*.local.json
+results/

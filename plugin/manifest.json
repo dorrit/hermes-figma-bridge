@@ -1,0 +1,12 @@
+{
+  "name": "Hermes Canvas Bridge",
+  "id": "hermes-canvas-bridge",
+  "api": "1.0.0",
+  "main": "src/code.js",
+  "ui": "src/ui.html",
+  "editorType": ["figma"],
+  "networkAccess": {
+    "allowedDomains": ["http://localhost:3131", "ws://localhost:3131"],
+    "reasoning": "Polls the local Hermes/Figma bridge for canvas commands."
+  }
+}

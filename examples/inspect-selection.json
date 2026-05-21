@@ -1,0 +1,6 @@
+{
+  "type": "inspectSelection",
+  "payload": {
+    "maxDepth": 4
+  }
+}
