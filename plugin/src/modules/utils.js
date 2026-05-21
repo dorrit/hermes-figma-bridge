@@ -68,12 +68,21 @@ function gradient(spec) {
   };
 }
 
+function bindPaintVariable(paint, variableId, field) {
+  if (!variableId || !figma.variables || typeof figma.variables.setBoundVariableForPaint !== "function") return paint;
+  var variable = figma.variables.getVariableById(variableId);
+  if (!variable) throw new Error(`Variable not found: ${variableId}`);
+  return figma.variables.setBoundVariableForPaint(paint, field || "color", variable);
+}
+
 function makePaint(spec) {
   if (!spec) return solid("#ffffff");
   if (typeof spec === "string") return solid(spec);
-  if (spec.type === "SOLID") return solid(spec.color || spec.hex || "#ffffff");
-  if (String(spec.type || "").indexOf("GRADIENT") === 0) return gradient(spec);
-  return solid(spec.color || spec.hex || "#ffffff");
+  var paint;
+  if (spec.type === "SOLID" || spec.variableId) paint = solid(spec.color || spec.hex || "#ffffff");
+  else if (String(spec.type || "").indexOf("GRADIENT") === 0) paint = gradient(spec);
+  else paint = solid(spec.color || spec.hex || "#ffffff");
+  return bindPaintVariable(paint, spec.variableId, spec.variableField || "color");
 }
 
 function makePaints(value, fallback) {
@@ -83,11 +92,19 @@ function makePaints(value, fallback) {
 }
 
 function applyVariableBinding(node, spec) {
-  if (!spec.variableBindings || typeof node.setBoundVariable !== "function") return;
+  if (!spec.variableBindings) return;
   for (const binding of spec.variableBindings) {
-    const variable = figma.variables.getVariableById(binding.variableId);
-    if (!variable) throw new Error(`Variable not found: ${binding.variableId}`);
-    node.setBoundVariable(binding.field, variable);
+    if (binding.field === "fills" && "fills" in node) {
+      var fillPaints = node.fills && Array.isArray(node.fills) ? node.fills.slice() : makePaints(spec.fills || spec.fill || spec.background, "#ffffff");
+      node.fills = fillPaints.map(function (paint) { return bindPaintVariable(paint, binding.variableId, binding.variableField || "color"); });
+    } else if (binding.field === "strokes" && "strokes" in node) {
+      var strokePaints = node.strokes && Array.isArray(node.strokes) ? node.strokes.slice() : makePaints(spec.strokes || spec.stroke, "#000000");
+      node.strokes = strokePaints.map(function (paint) { return bindPaintVariable(paint, binding.variableId, binding.variableField || "color"); });
+    } else if (typeof node.setBoundVariable === "function") {
+      const variable = figma.variables.getVariableById(binding.variableId);
+      if (!variable) throw new Error(`Variable not found: ${binding.variableId}`);
+      node.setBoundVariable(binding.field, variable);
+    }
   }
 }
 
